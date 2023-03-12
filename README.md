@@ -1,9 +1,8 @@
 # \[Group name\]
 
 **Group members:**
-- A
-- B
-- C
+Julius Buch (HFQ299)
+Oskar Kolze
 
 This repository contains  
 1. Inaugural project. 
