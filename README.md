@@ -1,4 +1,4 @@
-# JUlius & Oskar
+# Julius & Oskar
 
 **Group members:**
 Julius Buch (HFQ299)
