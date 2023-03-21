@@ -107,9 +107,10 @@ class HouseholdSpecializationModelClass:
         return opt
 
     def solve(self,do_print=False):
-        """ solve model continously """
+        """ solve model """
+    
+        pass
 
-        pass    
 
     def solve_wF_vec(self,discrete=False):
         """ solve model for vector of female wages """
