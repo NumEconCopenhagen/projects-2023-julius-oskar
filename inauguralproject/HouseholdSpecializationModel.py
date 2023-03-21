@@ -53,6 +53,7 @@ class HouseholdSpecializationModelClass:
         C = par.wM*LM + par.wF*LF
 
         # b. home production
+        
         H = HM**(1-par.alpha)*HF**par.alpha
 
         # c. total consumption utility
