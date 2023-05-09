@@ -1,22 +1,179 @@
+# a. packages are imported
+
+from types import SimpleNamespace
+
 from scipy import optimize
+import numpy as np
+import sympy as sp
+import matplotlib.pyplot as plt
 
-def solve_ss(alpha, c):
-    """ Example function. Solve for steady state k. 
+# b. class is defined 
 
-    Args:
-        c (float): costs
-        alpha (float): parameter
-
-    Returns:
-        result (RootResults): the solution represented as a RootResults object.
-
-    """ 
+class OLGModel(): # Defining the OLG model
     
-    # a. Objective function, depends on k (endogenous) and c (exogenous).
-    f = lambda k: k**alpha - c
-    obj = lambda kss: kss - f(kss)
+    def __init__(self):
+        # Creating namespace for parameters
+        self.par = SimpleNamespace()
+        self.setup()
 
-    #. b. call root finder to find kss.
-    result = optimize.root_scalar(obj,bracket=[0.1,100],method='bisect')
+    def setup(self): # Defining the general setup of the model - parameters etc.
+        par = self.par
+
+        # a. Defining parameters for the utility function and euler equation
+
+        par.c_1t = sp.symbols('c_1t') # Consumption in period t
+        par.c_2t = sp.symbols('c_{2t+1}') # Consumption in period t+1
+        par.rho = sp.symbols('rho') # Time preference coefficient
+        par.lamb = sp.symbols('lambda')
+
+        # b. Defining parameters for the production function 
+
+        par.alpha = sp.symbols('alpha')
+        par.K_t = sp.symbols('K_t')
+        par.K_t1 = sp.symbols('K_{t+1}')
+        par.L_t = sp.symbols('L_t')
+        par.L_t1 = sp.symbols('L_{t+1}')
+        par.k_t = sp.symbols('k_t')
+        par.k_t1 = sp.symbols('k_{t+1}')
+        par.A = sp.symbols('A')
+
+        # c. Defining parameters and variables for the constraints
+
+        # For the constraint in period t
+
+        par.w_t = sp.symbols('w_t') # The wage received by the young in period t
+
+        par.w_t1 = sp.symbols('w_{t+1}') # The wage received by the young in period t+1
+
+        par.s_t = sp.symbols('s_t') # The savings in period t
+
+        par.tau = sp.symbols('tau')
+
+        # For the constraint in period t+1
+        par.r_t1 = sp.symbols('r_{t+1}') # The interest rate between period t and t+1
+        par.n = sp.symbols('n') # The constant population growth rate
+
+        # Creating variables for capital accumulation and steady state capital
+
+        par.first = (1 / (1 + (1+par.rho)/(2+par.rho)*((1-par.alpha)/par.alpha) * par.tau))
+        par.second = ((1-par.alpha)*(1-par.tau))/((1+par.n)*(2+par.rho))
+        par.third = par.A * par.k_t**par.alpha
+        par.fourth = 1 / (1-par.alpha)
+
+    def utility(self):
+        par = self.par
+
+        return sp.log(par.c_1t)+1/(1+par.rho)*sp.log(par.c_2t)
     
-    return result
+    def constraints(self):
+
+        par = self.par
+        constraint1 = sp.Eq(par.c_1t+par.s_t, (1-par.tau)*par.w_t)
+        constraint2 = sp.Eq(par.c_2t, (1+par.r_t1)*par.s_t+(1+par.n)*par.tau*par.w_t1)
+
+        # Finding the lifetime constraint 
+
+        constraint2_sub = sp.solve(constraint2, par.s_t)
+        lifetimeconstraint = constraint1.subs(par.s_t, constraint2_sub[0])
+
+        return sp.solve(lifetimeconstraint, (1-par.tau)*par.w_t)[0]-(1-par.tau)*par.w_t
+    
+    def euler(self):
+        par = self.par
+
+        lagrangian = self.utility()+par.lamb*self.constraints()
+
+        foc1 = sp.Eq(sp.diff(lagrangian, par.c_1t),0)
+        foc2 = sp.Eq(sp.diff(lagrangian, par.c_2t),0)
+
+        lambda1 = sp.solve(foc1, par.lamb)[0]
+        lambda2 = sp.solve(foc2, par.lamb)[0]
+
+        euler = sp.solve(sp.Eq(lambda1, lambda2), par.c_1t)[0]
+
+        return sp.Eq(par.c_1t, euler)
+    
+    def savings(self):
+        par = self.par
+        
+        euler = self.euler()
+        constraint1_iso =par.s_t-(1-par.tau)*par.w_t
+        constraint2_iso = (1+par.r_t1)*par.s_t+(1+par.n)*par.tau*par.w_t1
+
+        savings = (euler.subs(par.c_1t, constraint1_iso)).subs(par.c_2t, constraint2_iso)
+
+        optsavings = sp.solve(savings, par.s_t)[0]
+
+        return optsavings
+    
+    def capitalaccum(self):
+        par = self.par 
+
+        kt01 = par.first*par.second*par.third
+        kt1 = sp.Eq(par.k_t1, kt01)
+
+        return kt1
+    
+    def steadystatecap(self):
+        par = self.par 
+
+        kss = (par.first*par.second*par.A)**par.fourth
+
+        return sp.Eq(sp.symbols('k^*'),kss)
+    
+    def steadystatecapnum(self):
+        par = self.par 
+
+        kss = (par.first*par.second*par.A)**par.fourth
+
+        return kss
+    
+     def numericaltransition_curve(self):
+            
+        
+        # a. Creating an empty numpy linspace from the minimum to the maximum bound of capital per capita, representing k_t+1
+        self.plot_k_t = np.linspace(0, 20, 1000)
+        
+        # b. For each value of k_t+1 loop through in order to find corresponding equilibrium value of k_t 
+        
+       
+        self.plot_k_t1 = np.empty()   # 1. Finding the steady state value capital when k_t is appriximately close to k_t+1
+        for i, k_t1 in enumerate(self.plot_k_t1):
+            k_t = self.equilibrium(k_t1)
+            self.plot_k_t1[i] = k_t
+            if (np.abs(k_t1 - k_t) < 0.01 and k_t > 0.01 and k_t < 19):
+                self.ss = k_t 
+            
+    
+    def plot_numericaltransition_curve(self, ax, **kwargs):
+       
+    
+        #Plotting the transition curve of capital accumulation 
+            # Args: 
+                # self (setup): Parameters from the OLG class
+                # ax (ndarray?): Subplot axis 
+            # Return:
+                #transition_curve (function): grapich presentation of optimal capital accumulation
+            
+        
+        ax.plot(self.plot_k_t, self.plot_k_t1, **kwargs)
+        
+        ax.set_xlabel("$k_t$")
+        ax.set_ylabel("$k_t+1$")
+        ax.set_xlim(0,self.kmax)
+        ax.set_ylim(0,self.kmax)
+        
+        
+    def plot_numerical45_curve(self, ax, **kwargs):
+        
+        
+        #For k_t+1=k_t plotting the 45 degree curve
+            # Args: 
+                #  self (setup): Parameters from the OLG class
+                # ax (ndarray?): Subplot axis 
+            # Return:
+                # 45 (function): Linear function 
+        
+       
+        
+        ax.plot([self.kmin, self.kmax], [self.kmin, self.kmax], **kwargs)
