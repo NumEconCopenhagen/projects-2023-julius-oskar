@@ -128,52 +128,9 @@ class OLGModel(): # Defining the OLG model
 
         return kss
     
-     def numericaltransition_curve(self):
-            
-        
-        # a. Creating an empty numpy linspace from the minimum to the maximum bound of capital per capita, representing k_t+1
-        self.plot_k_t = np.linspace(0, 20, 1000)
-        
-        # b. For each value of k_t+1 loop through in order to find corresponding equilibrium value of k_t 
-        
-       
-        self.plot_k_t1 = np.empty()   # 1. Finding the steady state value capital when k_t is appriximately close to k_t+1
-        for i, k_t1 in enumerate(self.plot_k_t1):
-            k_t = self.equilibrium(k_t1)
-            self.plot_k_t1[i] = k_t
-            if (np.abs(k_t1 - k_t) < 0.01 and k_t > 0.01 and k_t < 19):
-                self.ss = k_t 
-            
-    
-    def plot_numericaltransition_curve(self, ax, **kwargs):
-       
-    
-        #Plotting the transition curve of capital accumulation 
-            # Args: 
-                # self (setup): Parameters from the OLG class
-                # ax (ndarray?): Subplot axis 
-            # Return:
-                #transition_curve (function): grapich presentation of optimal capital accumulation
-            
-        
-        ax.plot(self.plot_k_t, self.plot_k_t1, **kwargs)
-        
-        ax.set_xlabel("$k_t$")
-        ax.set_ylabel("$k_t+1$")
-        ax.set_xlim(0,self.kmax)
-        ax.set_ylim(0,self.kmax)
-        
-        
-    def plot_numerical45_curve(self, ax, **kwargs):
-        
-        
-        #For k_t+1=k_t plotting the 45 degree curve
-            # Args: 
-                #  self (setup): Parameters from the OLG class
-                # ax (ndarray?): Subplot axis 
-            # Return:
-                # 45 (function): Linear function 
-        
-       
-        
-        ax.plot([self.kmin, self.kmax], [self.kmin, self.kmax], **kwargs)
+    def capitalaccumnum(self):
+        par = self.par 
+
+        kt01 = par.first*par.second*par.third
+
+        return kt01
