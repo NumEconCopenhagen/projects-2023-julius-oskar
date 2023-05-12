@@ -60,7 +60,7 @@ class OLGModel(): # Defining the OLG model
         par.third = par.A * par.k_t**par.alpha
         par.fourth = 1 / (1-par.alpha)
 
-    def utility(self):
+    def utility(self): # Defining utility function
         par = self.par
 
         return sp.log(par.c_1t)+1/(1+par.rho)*sp.log(par.c_2t)
@@ -78,22 +78,22 @@ class OLGModel(): # Defining the OLG model
 
         return sp.solve(lifetimeconstraint, (1-par.tau)*par.w_t)[0]-(1-par.tau)*par.w_t
     
-    def euler(self):
+    def euler(self): # Defining function to find the Euler equation
         par = self.par
 
-        lagrangian = self.utility()+par.lamb*self.constraints()
+        lagrangian = self.utility()+par.lamb*self.constraints() # Setting up the lagrangian
 
-        foc1 = sp.Eq(sp.diff(lagrangian, par.c_1t),0)
+        foc1 = sp.Eq(sp.diff(lagrangian, par.c_1t),0) # Calculating FOC's
         foc2 = sp.Eq(sp.diff(lagrangian, par.c_2t),0)
 
-        lambda1 = sp.solve(foc1, par.lamb)[0]
+        lambda1 = sp.solve(foc1, par.lamb)[0] # Solving the FOC's
         lambda2 = sp.solve(foc2, par.lamb)[0]
 
-        euler = sp.solve(sp.Eq(lambda1, lambda2), par.c_1t)[0]
+        euler = sp.solve(sp.Eq(lambda1, lambda2), par.c_1t)[0] # Solving the euler equation
 
         return sp.Eq(par.c_1t, euler)
     
-    def savings(self):
+    def savings(self): # defining savings function
         par = self.par
         
         euler = self.euler()
@@ -106,31 +106,28 @@ class OLGModel(): # Defining the OLG model
 
         return optsavings
     
-    def capitalaccum(self):
-        par = self.par 
+    def capitalaccum(self): # Defining capital accumulation function
+        par = self.par
+        
+        # defining parameters
 
-        kt01 = par.first*par.second*par.third
+        rho = sp.symbols('rho')
+        alpha = sp.symbols('alpha')
+        tau = sp.symbols('tau')
+        A = sp.symbols('A')
+        k_t = sp.symbols('k_t')
+        n = sp.symbols('n')
+
+        # setting up the cap. acc. equation
+
+        kt01 = ((1 / (1 + (1+rho)/(2+rho)*((1-alpha)/alpha) * tau)))*(((1-alpha)*(1-tau))/((1+n)*(2+rho)))*(A * k_t**alpha)
         kt1 = sp.Eq(par.k_t1, kt01)
 
         return kt1
     
-    def steadystatecap(self):
+    def steadystatecap(self): # defining steady state equation by use of the reported parameters
         par = self.par 
 
         kss = (par.first*par.second*par.A)**par.fourth
 
         return sp.Eq(sp.symbols('k^*'),kss)
-    
-    def steadystatecapnum(self):
-        par = self.par 
-
-        kss = (par.first*par.second*par.A)**par.fourth
-
-        return kss
-    
-    def capitalaccumnum(self):
-        par = self.par 
-
-        kt01 = par.first*par.second*par.third
-
-        return kt01
