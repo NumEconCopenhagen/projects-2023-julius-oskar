@@ -54,9 +54,4 @@ This function suggests and implements an extension of the model by considering t
 
 ## Usage
 
-To use the model and functions, follow these steps:
-
-1. Clone the repository to your local machine.
-
-```bash
-git clone https://github.com/your-username/household-specialization-model.git
+To use the model and functions simply clone the repository to your local machine: git clone https://github.com/your-username/household-specialization-model.git 
