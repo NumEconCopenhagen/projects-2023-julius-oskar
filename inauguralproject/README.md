@@ -1,7 +1,3 @@
-# Inaugural project
-
-Group Name: Julius & Oskar
-
 # Household Specialization Model
 
 This repository implements a household specialization model to analyze the joint utility maximization of labor within households. The model considers various parameters and preferences to determine optimal choices for male and female household members regarding market work and home production.
