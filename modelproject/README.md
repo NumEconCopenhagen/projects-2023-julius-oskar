@@ -38,8 +38,4 @@ The code provides an analytical solution to the OLG model under the PAYG system.
 
 The code includes graphical content to visualize the dynamics of the OLG model. It generates plots to illustrate capital accumulation over time and the impact of changing parameters on capital accumulation.
 
-## Conclusion
-
-In conclusion, this code offers an implementation of the OLG model under a PAYG system, allowing for the analysis of intertemporal utility maximization, optimal savings, capital accumulation, and the steady state of the model. It provides an analytical solution, graphical visualizations, and an interactive plot to facilitate the understanding of the model's dynamics and the impact of different parameters on key variables.
-
 Note: The code assumes a specific functional form for the utility function and production function. Further extensions and modifications can be made to explore different specifications and scenarios within the OLG framework.
