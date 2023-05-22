@@ -8,26 +8,35 @@ The OLG model considers an economy with a population that grows at a fixed annua
 
 Individuals in the economy maximize their intertemporal utility, taking into account their consumption and savings decisions. The utility function is assumed to be logarithmic, and individuals are subject to budget constraints. Under the PAYG system, the young generation contributes a portion of their wage income to support the consumption of the older generation.
 
+## Code Description
+
+The code is structured as a Python class named `OLGModel`, which represents the OLG model. It includes the following functions, methods, and variables:
+
+- `__init__(self)`: The constructor method that initializes the `OLGModel` class and sets up the model's parameters.
+
+- `setup(self)`: A method that defines the general setup of the model by assigning symbols to various parameters used in the model.
+
+- `utility(self)`: A method that defines the utility function of the model, which is a logarithmic function of consumption in different periods.
+
+- `constraints(self)`: A method that defines the constraints of the model, including budget constraints for different periods.
+
+- `euler(self)`: A method that finds the Euler equation of the model, which represents the optimal consumption path.
+
+- `savings(self)`: A method that solves for the optimal savings of individuals based on the constraints and Euler equation.
+
+- `capitalaccum(self)`: A method that defines the capital accumulation equation based on the given parameters.
+
+- `steadystatecap(self)`: A method that defines the steady state equation, which represents the steady-state level of capital.
+
+The code also includes additional functions for graphing and visualization, as well as an interactive plot using `ipywidgets` to explore the model's dynamics by adjusting parameter values.
+
 ## Analytical Solution
 
-The code provides an analytical solution to the OLG model under the PAYG system. The following key equations are derived and displayed:
-
-- Utility Function: The logarithmic utility function that represents individuals' preferences over consumption in different periods.
-- Euler Equation: The equation that characterizes the optimal consumption path, relating consumption in the current period to consumption in the next period and the interest rate.
-- Optimal Savings: The equation that determines the optimal savings decision of individuals, considering the budget constraints and interest rates.
-- Capital Accumulation: The equation that describes the accumulation of capital over time based on the production function and savings decisions.
-- Steady State: The equation that defines the steady-state level of capital in the economy.
+The code provides an analytical solution to the OLG model under the PAYG system. It derives and displays the utility function, Euler equation, optimal savings equation, capital accumulation equation, and steady state equation.
 
 ## Graphical Analysis
 
-The code includes graphical content to visualize the dynamics of the OLG model. Specifically:
-
-- Capital Accumulation Plot: A plot showing the relationship between capital levels in different periods, illustrating how capital accumulates over time.
-- Impact of Parameter Changes: Plots demonstrating the effect of changing parameters, such as the interest rate coefficient (`rho`), on capital accumulation.
-
-## Interactive Plot
-
-The code also provides an interactive plot using `ipywidgets`. Users can adjust parameter values and observe the corresponding changes in capital accumulation. This interactive plot allows for a more intuitive exploration of the model's dynamics.
+The code includes graphical content to visualize the dynamics of the OLG model. It generates plots to illustrate capital accumulation over time and the impact of changing parameters on capital accumulation.
 
 ## Conclusion
 
