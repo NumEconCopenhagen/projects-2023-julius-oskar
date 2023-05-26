@@ -1,5 +1,5 @@
 **Group members:**
-Julius Buch (HFQ299)
+Julius Buch (HFQ299) and
 Oskar Kolze (NVP725)
 
 This repository contains  
